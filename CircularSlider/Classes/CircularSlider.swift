@@ -37,6 +37,7 @@ public class CircularSlider: UIView {
     // MARK: - properties
     public weak var delegate: CircularSliderDelegate?
     
+    private var rotationGestureRecognizer: RotationGestureRecognizer?
     private var containerView: UIView!
     private var nibName = "CircularSlider"
     private var backgroundCircleLayer = CAShapeLayer()
@@ -271,6 +272,7 @@ public class CircularSlider: UIView {
     
     private func configureGesture() {
         let gesture = RotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)), arcRadius: arcRadius, knobRadius:  knobRadius)
+        rotationGestureRecognizer = gesture
         addGestureRecognizer(gesture)
     }
     
@@ -311,6 +313,14 @@ public class CircularSlider: UIView {
     
     
     // MARK: - update
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        rotationGestureRecognizer?.arcRadius = arcRadius
+        rotationGestureRecognizer?.knobRadius = knobRadius
+    }
+    
     public func setValue(value: Float, animated: Bool) {
         self.value = delegate?.circularSlider?(self, valueForValue: value) ?? value
         
