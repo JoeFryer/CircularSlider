@@ -276,6 +276,14 @@ public class CircularSlider: UIView {
         addGestureRecognizer(gesture)
     }
     
+    public func hideCenteredView() {
+        centeredView.hidden = true
+    }
+    
+    public func showCenteredView() {
+        centeredView.hidden = false
+    }
+    
     
     // MARK: - appearance
     private func appearanceIconImageView() {
