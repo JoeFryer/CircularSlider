@@ -12,8 +12,8 @@ open class RotationGestureRecognizer: UIPanGestureRecognizer {
     
     // MARK: - properties
     var arcRadius: CGFloat = 100
-    fileprivate var valid = false
-    fileprivate var knobRadius: CGFloat = 10
+    var valid = false
+    var knobRadius: CGFloat = 10
     
     open var rotation: CGFloat = 0
     open var tollerance: CGFloat = 0.5

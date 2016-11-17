@@ -37,6 +37,7 @@ open class CircularSlider: UIView {
     // MARK: - properties
     open weak var delegate: CircularSliderDelegate?
     
+    fileprivate var rotationGestureRecognizer: RotationGestureRecognizer?
     fileprivate var containerView: UIView!
     fileprivate var nibName = "CircularSlider"
     fileprivate var backgroundCircleLayer = CAShapeLayer()
@@ -48,6 +49,23 @@ open class CircularSlider: UIView {
     fileprivate var backingFractionDigits: NSInteger = 2
     fileprivate let maxFractionDigits: NSInteger = 4
     fileprivate var startAngle: CGFloat {
+        
+        
+//=======
+//    public weak var delegate: CircularSliderDelegate?
+//    
+//    private var rotationGestureRecognizer: RotationGestureRecognizer?
+//    private var containerView: UIView!
+//    private var nibName = "CircularSlider"
+//    private var backgroundCircleLayer = CAShapeLayer()
+//    private var progressCircleLayer = CAShapeLayer()
+//    private var knobLayer = CAShapeLayer()
+//    private var backingValue: Float = 0
+//    private var backingKnobAngle: CGFloat = 0
+//    private var startAngle: CGFloat {
+//>>>>>>> JDF
+        
+        
         return -CGFloat(M_PI_2) + radiansOffset
     }
     fileprivate var endAngle: CGFloat {
@@ -282,9 +300,10 @@ open class CircularSlider: UIView {
         appearanceKnobLayer()
     }
     
-    fileprivate func configureGesture() {
-        rotationGesture = RotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)), arcRadius: arcRadius, knobRadius:  knobRadius)
-        addGestureRecognizer(rotationGesture!)
+    private func configureGesture() {
+        let gesture = RotationGestureRecognizer(target: self, action: #selector(handleRotationGesture(_:)), arcRadius: arcRadius, knobRadius:  knobRadius)
+        rotationGestureRecognizer = gesture
+        addGestureRecognizer(gesture)
     }
     
     fileprivate func configureFont() {
@@ -293,6 +312,14 @@ open class CircularSlider: UIView {
             decimalFont = UIFont.systemFont(ofSize: 42, weight: UIFontWeightThin)
             divisaFont = UIFont.systemFont(ofSize: 26, weight: UIFontWeightThin)
         }
+    }
+    
+    public func hideCenteredView() {
+        centeredView.isHidden = true
+    }
+    
+    public func showCenteredView() {
+        centeredView.isHidden = false
     }
     
     
@@ -324,6 +351,14 @@ open class CircularSlider: UIView {
     fileprivate func appearanceDivisa() {
         divisaLabel.text = divisa
         divisaLabel.font = divisaFont
+    }
+    
+    
+    open override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        rotationGestureRecognizer?.arcRadius = arcRadius
+        rotationGestureRecognizer?.knobRadius = knobRadius
     }
     
     
