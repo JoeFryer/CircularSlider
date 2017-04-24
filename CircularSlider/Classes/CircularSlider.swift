@@ -14,6 +14,8 @@ import UIKit
     @objc optional func circularSlider(_ circularSlider: CircularSlider, valueForValue value: Float) -> Float
     @objc optional func circularSlider(_ circularSlider: CircularSlider, didBeginEditing textfield: UITextField)
     @objc optional func circularSlider(_ circularSlider: CircularSlider, didEndEditing textfield: UITextField)
+    @objc optional func circularSliderBeganSliding(circularSlider: CircularSlider)
+    @objc optional func circularSliderFinishedSliding(circularSlider: CircularSlider)
     //  optional func circularSlider(circularSlider: CircularSlider, attributeTextForValue value: Float) -> NSAttributedString
 }
 
@@ -198,6 +200,7 @@ open class CircularSlider: UIView {
             }
         }
     }
+    public var allowsRotationThroughZero = false
     
     
     // MARK: - init
@@ -230,7 +233,6 @@ open class CircularSlider: UIView {
     
     // MARK: - drawing methods
     override open func draw(_ rect: CGRect) {
-        print("drawRect")
         backgroundCircleLayer.bounds = bounds
         progressCircleLayer.bounds = bounds
         knobLayer.bounds = bounds
@@ -424,6 +426,9 @@ open class CircularSlider: UIView {
         
         if gesture.state == UIGestureRecognizerState.began {
             cancelAnimation()
+            delegate?.circularSliderBeganSliding?(circularSlider: self)
+        } else if gesture.state == .ended {
+            delegate?.circularSliderFinishedSliding?(circularSlider: self)
         }
         
         var rotationAngle = gesture.rotation
@@ -434,7 +439,9 @@ open class CircularSlider: UIView {
         }
         rotationAngle = min(endAngle, max(startAngle, rotationAngle))
         
-        guard abs(Double(rotationAngle - knobAngle)) < M_PI_2 else { return }
+        if !allowsRotationThroughZero {
+            guard abs(Double(rotationAngle - knobAngle)) < M_PI_2 else { return }
+        }
         
         let valueForAngle = Float(rotationAngle - startAngle) / Float(angleRange) * valueRange + minimumValue
         setValue(valueForAngle, animated: false)
