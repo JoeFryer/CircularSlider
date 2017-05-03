@@ -201,6 +201,8 @@ open class CircularSlider: UIView {
         }
     }
     public var allowsRotationThroughZero = false
+    open var knobFillColor: UIColor?
+    open var circleCenterColor: UIColor = UIColor.clear
     
     
     // MARK: - init
@@ -332,7 +334,7 @@ open class CircularSlider: UIView {
     
     fileprivate func appearanceBackgroundLayer() {
         backgroundCircleLayer.lineWidth = lineWidth
-        backgroundCircleLayer.fillColor = UIColor.clear.cgColor
+        backgroundCircleLayer.fillColor = circleCenterColor.cgColor
         backgroundCircleLayer.strokeColor = bgColor.cgColor
         backgroundCircleLayer.lineCap = kCALineCapRound
     }
@@ -346,7 +348,11 @@ open class CircularSlider: UIView {
     
     fileprivate func appearanceKnobLayer() {
         knobLayer.lineWidth = 2
-        knobLayer.fillColor = highlighted ? pgHighlightedColor.cgColor : pgNormalColor.cgColor
+        if let knobFillColor = knobFillColor {
+            knobLayer.fillColor = knobFillColor.cgColor
+        } else {
+            knobLayer.fillColor = highlighted ? pgHighlightedColor.cgColor : pgNormalColor.cgColor
+        }
         knobLayer.strokeColor = UIColor.white.cgColor
     }
     
