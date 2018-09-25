@@ -10,7 +10,8 @@ A powerful Circular Slider. It's written in Swift, it's 100% IBDesignable and al
   s.author           = { "taglia3" => "the.taglia3@gmail.com" }
   s.source           = { :git => "https://github.com/taglia3/CircularSlider.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/taglia3'
-  s.source_files     = 'CircularSlider/Classes/**/*'
+  s.source_files     = 'CircularSlider/Classes/**/*.{swift}'
+  s.resources        = 'CircularSlider/Classes/**/*.{xib}'
   s.frameworks	      = 'UIKit'
   s.ios.deployment_target = '8.0'
 end
