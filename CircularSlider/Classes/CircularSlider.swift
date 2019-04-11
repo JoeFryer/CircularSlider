@@ -221,7 +221,7 @@ open class CircularSlider: UIView {
     fileprivate func xibSetup() {
         containerView = loadViewFromNib()
         containerView.frame = bounds
-        containerView.autoresizingMask = [UIViewAutoresizing.flexibleWidth, UIViewAutoresizing.flexibleHeight]
+        containerView.autoresizingMask = [UIView.AutoresizingMask.flexibleWidth, UIView.AutoresizingMask.flexibleHeight]
         addSubview(containerView)
     }
     
@@ -312,9 +312,9 @@ open class CircularSlider: UIView {
     
     fileprivate func configureFont() {
         if #available(iOS 8.2, *) {
-            intFont = UIFont.systemFont(ofSize: 42, weight: UIFontWeightRegular)
-            decimalFont = UIFont.systemFont(ofSize: 42, weight: UIFontWeightThin)
-            divisaFont = UIFont.systemFont(ofSize: 26, weight: UIFontWeightThin)
+            intFont = UIFont.systemFont(ofSize: 42, weight: UIFont.Weight.regular)
+            decimalFont = UIFont.systemFont(ofSize: 42, weight: UIFont.Weight.thin)
+            divisaFont = UIFont.systemFont(ofSize: 26, weight: UIFont.Weight.thin)
         }
     }
     
@@ -336,14 +336,14 @@ open class CircularSlider: UIView {
         backgroundCircleLayer.lineWidth = lineWidth
         backgroundCircleLayer.fillColor = circleCenterColor.cgColor
         backgroundCircleLayer.strokeColor = bgColor.cgColor
-        backgroundCircleLayer.lineCap = kCALineCapRound
+        backgroundCircleLayer.lineCap = CAShapeLayerLineCap.round
     }
     
     fileprivate func appearanceProgressLayer() {
         progressCircleLayer.lineWidth = lineWidth
         progressCircleLayer.fillColor = UIColor.clear.cgColor
         progressCircleLayer.strokeColor = highlighted ? pgHighlightedColor.cgColor : pgNormalColor.cgColor
-        progressCircleLayer.lineCap = kCALineCapRound
+        progressCircleLayer.lineCap = CAShapeLayerLineCap.round
     }
     
     fileprivate func appearanceKnobLayer() {
@@ -391,8 +391,8 @@ open class CircularSlider: UIView {
         strokeAnimation.fromValue = progressCircleLayer.strokeEnd
         strokeAnimation.toValue = CGFloat(normalizedValue)
         strokeAnimation.isRemovedOnCompletion = false
-        strokeAnimation.fillMode = kCAFillModeRemoved
-        strokeAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        strokeAnimation.fillMode = CAMediaTimingFillMode.removed
+        strokeAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         progressCircleLayer.add(strokeAnimation, forKey: "strokeAnimation")
         progressCircleLayer.strokeEnd = CGFloat(normalizedValue)
         CATransaction.commit()
@@ -430,7 +430,7 @@ open class CircularSlider: UIView {
     @objc fileprivate func handleRotationGesture(_ sender: AnyObject) {
         guard let gesture = sender as? RotationGestureRecognizer else { return }
         
-        if gesture.state == UIGestureRecognizerState.began {
+        if gesture.state == UIGestureRecognizer.State.began {
             cancelAnimation()
             delegate?.circularSliderBeganSliding?(circularSlider: self)
         } else if gesture.state == .ended {
@@ -470,8 +470,8 @@ open class CircularSlider: UIView {
     
     fileprivate func addDoneButtonOnKeyboard() {
         let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
-        let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
-        let doneButton: UIBarButtonItem = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.done, target: self, action: #selector(resignFirstResponder))
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+        let doneButton: UIBarButtonItem = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: self, action: #selector(resignFirstResponder))
         
         doneToolbar.barStyle = UIBarStyle.default
         doneToolbar.items = [flexSpace, doneButton]
