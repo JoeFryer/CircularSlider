@@ -287,6 +287,14 @@ open class CircularSlider: UIView {
         }
     }
     
+    public func hideCenteredView() {
+        titleLabel.isHidden = true
+    }
+    
+    public func showCenteredView() {
+        titleLabel.isHidden = false
+    }
+    
     // MARK: - appearance
     
     fileprivate func appearanceBackgroundLayer() {
