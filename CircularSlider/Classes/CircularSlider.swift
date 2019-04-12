@@ -24,16 +24,7 @@ import UIKit
 open class CircularSlider: UIView {
     
     // MARK: - outlets
-    @IBOutlet fileprivate weak var iconImageView: UIImageView!
-    @IBOutlet fileprivate weak var iconCenterY: NSLayoutConstraint!
-    @IBOutlet fileprivate weak var centeredView: UIView!
     @IBOutlet fileprivate weak var titleLabel: UILabel!
-    @IBOutlet fileprivate weak var textfield: UITextField! {
-        didSet {
-            addDoneButtonOnKeyboard()
-        }
-    }
-    @IBOutlet fileprivate weak var divisaLabel: UILabel!
     
     
     // MARK: - properties
@@ -51,23 +42,6 @@ open class CircularSlider: UIView {
     fileprivate var backingFractionDigits: NSInteger = 2
     fileprivate let maxFractionDigits: NSInteger = 4
     fileprivate var startAngle: CGFloat {
-        
-        
-//=======
-//    public weak var delegate: CircularSliderDelegate?
-//    
-//    private var rotationGestureRecognizer: RotationGestureRecognizer?
-//    private var containerView: UIView!
-//    private var nibName = "CircularSlider"
-//    private var backgroundCircleLayer = CAShapeLayer()
-//    private var progressCircleLayer = CAShapeLayer()
-//    private var knobLayer = CAShapeLayer()
-//    private var backingValue: Float = 0
-//    private var backingKnobAngle: CGFloat = 0
-//    private var startAngle: CGFloat {
-//>>>>>>> JDF
-        
-        
         return -CGFloat(Double.pi / 2) + radiansOffset
     }
     fileprivate var endAngle: CGFloat {
@@ -117,13 +91,11 @@ open class CircularSlider: UIView {
     @IBInspectable
     open var icon: UIImage? = UIImage() {
         didSet {
-            configureIcon()
         }
     }
     @IBInspectable
     open var divisa: String = "" {
         didSet {
-            appearanceDivisa()
         }
     }
     @IBInspectable
@@ -180,7 +152,6 @@ open class CircularSlider: UIView {
     @IBInspectable
     open var hideLabels: Bool = false {
         didSet {
-            setLabelsHidden(self.hideLabels)
         }
     }
     @IBInspectable
@@ -253,7 +224,6 @@ open class CircularSlider: UIView {
         progressCircleLayer.path = getCirclePath()
         knobLayer.path = getKnobPath()
         
-        appearanceIconImageView()
         setValue(value, animated: false)
     }
     
@@ -281,11 +251,6 @@ open class CircularSlider: UIView {
         configureKnobLayer()
         configureGesture()
         configureFont()
-    }
-    
-    fileprivate func configureIcon() {
-        iconImageView.image = icon
-        appearanceIconImageView()
     }
     
     fileprivate func configureBackgroundLayer() {
@@ -322,19 +287,7 @@ open class CircularSlider: UIView {
         }
     }
     
-    public func hideCenteredView() {
-        centeredView.isHidden = true
-    }
-    
-    public func showCenteredView() {
-        centeredView.isHidden = false
-    }
-    
-    
     // MARK: - appearance
-    fileprivate func appearanceIconImageView() {
-        iconCenterY.constant = arcRadius
-    }
     
     fileprivate func appearanceBackgroundLayer() {
         backgroundCircleLayer.lineWidth = lineWidth
@@ -360,12 +313,6 @@ open class CircularSlider: UIView {
         knobLayer.strokeColor = UIColor.white.cgColor
     }
     
-    fileprivate func appearanceDivisa() {
-        divisaLabel.text = divisa
-        divisaLabel.font = divisaFont
-    }
-    
-    
     open override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -377,8 +324,6 @@ open class CircularSlider: UIView {
     // MARK: - update
     open func setValue(_ value: Float, animated: Bool) {
         self.value = delegate?.circularSlider?(self, valueForValue: value) ?? value
-        
-        updateLabels()
         
         setStrokeEnd(animated: animated)
         setKnobRotation(animated: animated)
@@ -417,18 +362,6 @@ open class CircularSlider: UIView {
         backingKnobAngle = knobAngle
     }
     
-    fileprivate func setLabelsHidden(_ isHidden: Bool) {
-        centeredView.isHidden = isHidden
-    }
-    
-    fileprivate func updateLabels() {
-        updateValueLabel()
-    }
-    
-    fileprivate func updateValueLabel() {
-        textfield.attributedText = value.formatWithFractionDigits(fractionDigits, customDecimalSeparator: customDecimalSeparator).sliderAttributeString(intFont: intFont, decimalFont: decimalFont, customDecimalSeparator: customDecimalSeparator )
-    }
-    
     
     // MARK: - gesture handler
     @objc fileprivate func handleRotationGesture(_ sender: AnyObject) {
@@ -460,81 +393,5 @@ open class CircularSlider: UIView {
     func cancelAnimation() {
         progressCircleLayer.removeAllAnimations()
         knobLayer.removeAllAnimations()
-    }
-    
-    
-    // MARK:- methods
-    open override func becomeFirstResponder() -> Bool {
-        return textfield.becomeFirstResponder()
-    }
-    
-    open override func resignFirstResponder() -> Bool {
-        return textfield.resignFirstResponder()
-    }
-    
-    fileprivate func addDoneButtonOnKeyboard() {
-        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
-        let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
-        let doneButton: UIBarButtonItem = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.done, target: self, action: #selector(resignFirstResponder))
-        
-        doneToolbar.barStyle = UIBarStyle.default
-        doneToolbar.items = [flexSpace, doneButton]
-        doneToolbar.sizeToFit()
-        
-        textfield.inputAccessoryView = doneToolbar
-    }
-}
-
-
-// MARK: - UITextFieldDelegate
-extension CircularSlider: UITextFieldDelegate {
-    
-    public func textFieldDidBeginEditing(_ textField: UITextField) {
-        delegate?.circularSlider?(self, didBeginEditing: textfield)
-    }
-    
-    public func textFieldDidEndEditing(_ textField: UITextField) {
-        delegate?.circularSlider?(self, didEndEditing: textfield)
-        layoutIfNeeded()
-        setValue(textfield.text!.toFloat(), animated: true)
-    }
-    
-    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        let newString = (textField.text! as NSString).replacingCharacters(in: range, with: string)
-        
-        if newString.count > 0 {
-            
-            let fmt = NumberFormatter()
-            let scanner: Scanner = Scanner(string:newString.replacingOccurrences(of: customDecimalSeparator ?? fmt.decimalSeparator, with: "."))
-            let isNumeric = scanner.scanDecimal(nil) && scanner.isAtEnd
-            
-            if isNumeric {
-                var decimalFound = false
-                var charactersAfterDecimal = 0
-                
-                
-                
-                for ch in newString.reversed() {
-                    if ch == fmt.decimalSeparator.first {
-                        decimalFound = true
-                        break
-                    }
-                    charactersAfterDecimal += 1
-                }
-                if decimalFound && charactersAfterDecimal > fractionDigits {
-                    return false
-                }
-                else {
-                    return true
-                }
-            }
-            else {
-                return false
-            }
-        }
-        else {
-            return true
-        }
     }
 }
